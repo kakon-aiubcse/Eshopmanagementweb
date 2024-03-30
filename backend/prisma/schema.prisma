@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NEXT_PUBLIC_DATABASE_URL")
+}
+
+model Product {
+  prod_ID      Int      @id @default(autoincrement())
+  prod_code         String? @unique
+  prod_name         String
+  prod_sku          Int @default(0)
+  prod_sellprice    String?
+  
+  prod_totalSP      String?
+  prod_buyprice     String?
+  
+  prod_totalBP      String?
+  createdAt      DateTime @default(now())
+  username    String?
+  accountant   Accountant? @relation(fields: [username], references: [username])
+  
+ 
+ 
+}
+
+model Accountant {
+  acct_ID      Int      @id @default(autoincrement())
+  name         String
+  email        String
+  pass         String
+  username     String    @unique
+  products     Product[]
+  passwordResetToken passwordResetToken[]
+  SellPriceHistory  SellPriceHistory[]
+  BuyPriceHistory   BuyPriceHistory[]
+}
+
+model passwordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  username    String?
+  accountant   Accountant? @relation(fields: [username], references: [username])
+}
+
+model SellPriceHistory {
+  id             Int      @id @default(autoincrement())
+  prod_code    String
+  prod_name    String
+  prod_sellsku   String
+  prod_sellprice  String
+  prod_totalSP    String
+  createdAt      DateTime @default(now())
+   
+   username    String?
+  accountant   Accountant? @relation(fields: [username], references: [username])
+}
+
+model BuyPriceHistory {
+  id             Int      @id @default(autoincrement())
+  prod_code    String
+  prod_name    String
+  prod_buysku   String
+  prod_buyprice  String
+  prod_totalBP    String
+  createdAt      DateTime @default(now())
+   username    String?
+  accountant   Accountant? @relation(fields: [username], references: [username])
+}
